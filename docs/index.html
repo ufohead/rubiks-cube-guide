@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>魔術方塊教學：從初階到高階</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --bg: #F6F4EF;
+    --bg-panel: #FFFFFF;
+    --ink: #1B1B18;
+    --ink-soft: #55534C;
+    --line: #DCD7C9;
+    --code-bg: #221F1A;
+    --code-ink: #F3EFE3;
+
+    --white: #F2F2F0;
+    --white-ink: #1B1B18;
+    --yellow: #F0C419;
+    --red: #C1272D;
+    --orange: #E0672A;
+    --blue: #2E5FA3;
+    --green: #1E8449;
+
+    --tag-easy-bg: #E4F0E6;
+    --tag-easy-ink: #1E6B3A;
+    --tag-mid-bg: #FBE9D4;
+    --tag-mid-ink: #A0500F;
+    --tag-hard-bg: #F5DCDC;
+    --tag-hard-ink: #A32323;
+  }
+  html { scroll-padding-top: calc(72px + env(safe-area-inset-top, 0px)); }
+  * { box-sizing: border-box; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161512;
+      --bg-panel: #1E1D19;
+      --ink: #F1EFE6;
+      --ink-soft: #B8B4A6;
+      --line: #37352C;
+      --code-bg: #0F0E0C;
+      --code-ink: #F3EFE3;
+      --tag-easy-bg: #17301F;
+      --tag-easy-ink: #7CD79B;
+      --tag-mid-bg: #3A2711;
+      --tag-mid-ink: #F0AA5E;
+      --tag-hard-bg: #391A1A;
+      --tag-hard-ink: #F09B9B;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161512;
+    --bg-panel: #1E1D19;
+    --ink: #F1EFE6;
+    --ink-soft: #B8B4A6;
+    --line: #37352C;
+    --code-bg: #0F0E0C;
+    --code-ink: #F3EFE3;
+    --tag-easy-bg: #17301F;
+    --tag-easy-ink: #7CD79B;
+    --tag-mid-bg: #3A2711;
+    --tag-mid-ink: #F0AA5E;
+    --tag-hard-bg: #391A1A;
+    --tag-hard-ink: #F09B9B;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, .mono, .alg, .badge-face {
+    font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 20px 12px;
+  }
+  .topbar-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: space-between;
+  }
+  .brand {
+    font-weight: 900;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .toc {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc a {
+    flex: none;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .toc a:hover { color: var(--ink); border-color: var(--line); }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 880px; margin: 0 auto; padding: 40px 20px 100px; }
+
+  .hero {
+    padding: 8px 0 36px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 36px;
+  }
+  .hero-facelets { display: flex; gap: 6px; margin-bottom: 22px; }
+  .facelet {
+    width: 22px; height: 22px; border-radius: 5px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+  }
+  h1 {
+    font-size: clamp(28px, 6vw, 40px);
+    line-height: 1.25;
+    font-weight: 900;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+  .hero p.lead {
+    font-size: 16.5px;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  section { margin-bottom: 56px; scroll-margin-top: 84px; }
+  .stage-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-size: clamp(22px, 4.5vw, 27px);
+    font-weight: 900;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .section-intro { color: var(--ink-soft); margin: 8px 0 26px; max-width: 66ch; }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 34px 0 10px;
+    padding-top: 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+
+  .tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .tag-easy { background: var(--tag-easy-bg); color: var(--tag-easy-ink); }
+  .tag-mid  { background: var(--tag-mid-bg); color: var(--tag-mid-ink); }
+  .tag-hard { background: var(--tag-hard-bg); color: var(--tag-hard-ink); }
+
+  /* ---------- Face badges (U D L R F B) ---------- */
+  .badge-face {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 6px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 13px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18);
+  }
+  .f-U { background: var(--white); color: var(--white-ink); }
+  .f-D { background: var(--yellow); color: #3a2c02; }
+  .f-L { background: var(--orange); color: #fff; }
+  .f-R { background: var(--red); color: #fff; }
+  .f-F { background: var(--green); color: #fff; }
+  .f-B { background: var(--blue); color: #fff; }
+
+  .notation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+    margin: 18px 0 24px;
+  }
+  .notation-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .notation-card .name { font-size: 13.5px; color: var(--ink-soft); }
+
+  /* ---------- Tables ---------- */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin: 14px 0 28px;
+  }
+  table { width: 100%; border-collapse: collapse; background: var(--bg-panel); font-size: 14.5px; }
+  th, td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+  th {
+    font-size: 12.5px;
+    text-transform: none;
+    color: var(--ink-soft);
+    font-weight: 700;
+    background: color-mix(in srgb, var(--bg-panel) 92%, var(--ink) 8%);
+  }
+  tr:last-child td { border-bottom: none; }
+  td.alg-cell, .alg {
+    font-size: 13.5px;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  td.name-cell { font-weight: 700; white-space: nowrap; }
+
+  .callout {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--ink);
+    background: var(--bg-panel);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .callout strong { color: var(--ink); }
+
+  /* ---------- Diagrams ---------- */
+  .diagram-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin: 14px 0 22px;
+  }
+  .diagram-text { flex: 1 1 260px; min-width: 220px; }
+  .diagram-text p:last-child { margin-bottom: 0; }
+  .diagram-box {
+    flex: 0 0 112px;
+    text-align: center;
+  }
+  .diagram-box.wide { flex-basis: 220px; }
+  .diagram-box svg { width: 100%; height: auto; display: block; background: var(--bg-panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px; }
+  .diagram-box .cap { font-size: 11.5px; color: var(--ink-soft); margin-top: 6px; line-height: 1.4; }
+  .diagram-cluster { display: flex; gap: 14px; flex-wrap: wrap; margin: 14px 0 22px; }
+  .diagram-cluster .diagram-box { flex: 0 0 96px; }
+  .video-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+  .video-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--red);
+    background: color-mix(in srgb, var(--red) 10%, var(--bg-panel));
+    border: 1px solid color-mix(in srgb, var(--red) 30%, var(--line));
+    padding: 5px 11px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .video-link:hover { background: color-mix(in srgb, var(--red) 18%, var(--bg-panel)); }
+  .video-link .play { font-size: 10px; }
+  .mini-icon { width: 30px; height: 30px; display: inline-block; vertical-align: middle; }
+  .mini-icon svg { width: 100%; height: 100%; border-radius: 5px; }
+  td.icon-cell { text-align: center; }
+  @media (max-width: 480px) {
+    .diagram-box { flex-basis: 92px; }
+    .diagram-box.wide { flex-basis: 180px; }
+  }
+
+  .algblock {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 15px;
+    margin: 12px 0 18px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  footer {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+  }
+
+  @media (max-width: 560px) {
+    .toc a { font-size: 12px; padding: 5px 8px; }
+    main { padding: 28px 16px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">🧩 魔術方塊教學</div>
+    <nav class="toc">
+      <a href="#notation">代號</a>
+      <a href="#comparison">LBL vs CFOP</a>
+      <a href="#beginner">初階</a>
+      <a href="#intermediate">中階</a>
+      <a href="#advanced">高階</a>
+      <a href="#practice">練習建議</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+
+  <div class="hero">
+    <div class="hero-facelets">
+      <div class="facelet" style="background:var(--white)"></div>
+      <div class="facelet" style="background:var(--yellow)"></div>
+      <div class="facelet" style="background:var(--red)"></div>
+      <div class="facelet" style="background:var(--orange)"></div>
+      <div class="facelet" style="background:var(--blue)"></div>
+      <div class="facelet" style="background:var(--green)"></div>
+    </div>
+    <h1>魔術方塊教學：從初階到高階</h1>
+    <p class="lead">這份文件按照學習順序編排：先建立代號系統與空間感，再用「層先法」完整解出方塊，接著學習指法與 F2L 提升效率，最後進入 CFOP 系統與競速公式表。每個段落都可以獨立查閱，建議照順序練習。</p>
+  </div>
+
+  <!-- ===================== 代號系統 ===================== -->
+  <section id="notation">
+    <div class="stage-label">基礎知識</div>
+    <h2>方塊代號系統</h2>
+    <p class="section-intro">所有公式都用同一套字母代號書寫，先熟悉這套系統，後面所有教學才看得懂。</p>
+    <div class="video-links">
+      <a class="video-link" href="https://www.youtube.com/watch?v=7Ron6MN45LY" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：10 分鐘學會解方塊（含代號說明）</a>
+    </div>
+
+    <h3>六個面</h3>
+    <p>面向你手持的方塊，六個面分別用英文字母代表。下圖是把方塊「攤開」的示意圖：中間橫排是 L／F／R／B 四個側面，上下分別是 U（頂）與 D（底）——攤開後互相緊鄰的格子，在方塊上就是實際相鄰的面：</p>
+    <div class="diagram-row">
+      <div class="diagram-box wide">
+        <svg viewBox="0 0 292 244" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="34" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="34" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="34" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="52.67" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="52.67" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="52.67" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="71.33" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="71.33" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="71.33" width="16.67" height="16.67" rx="2" fill="#F2F2F0" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="31" y="24" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle" font-weight="700">U</text>
+        <g transform="translate(88,0)"><rect x="4" y="34" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="34" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="34" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="52.67" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="52.67" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="52.67" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="71.33" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="71.33" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="71.33" width="16.67" height="16.67" rx="2" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="31" y="24" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle" font-weight="700">L</text></g>
+        <g transform="translate(0,88)"><rect x="4" y="34" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="34" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="34" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="52.67" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="52.67" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="52.67" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="71.33" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="71.33" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="71.33" width="16.67" height="16.67" rx="2" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="31" y="24" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle" font-weight="700">F</text></g>
+        <g transform="translate(88,88)"><rect x="4" y="34" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="34" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="34" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="52.67" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="52.67" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="52.67" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="71.33" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="71.33" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="71.33" width="16.67" height="16.67" rx="2" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="31" y="24" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle" font-weight="700">R</text></g>
+        <g transform="translate(176,88)"><rect x="4" y="34" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="34" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="34" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="52.67" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="52.67" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="52.67" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="71.33" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="71.33" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="71.33" width="16.67" height="16.67" rx="2" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="31" y="24" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle" font-weight="700">B</text></g>
+        <g transform="translate(0,176)"><rect x="4" y="34" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="34" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="34" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="52.67" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="52.67" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="52.67" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="4" y="71.33" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="22.67" y="71.33" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="41.33" y="71.33" width="16.67" height="16.67" rx="2" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="31" y="24" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle" font-weight="700">D</text></g>
+        </svg>
+        <div class="cap">攤開示意圖(WCA 標準配色：白對黃、藍對綠、紅對橙)</div>
+      </div>
+      <div class="diagram-text">
+        <div class="notation-grid">
+          <div class="notation-card"><span class="badge-face f-U">U</span><span class="name">Up　頂面</span></div>
+          <div class="notation-card"><span class="badge-face f-D">D</span><span class="name">Down　底面</span></div>
+          <div class="notation-card"><span class="badge-face f-L">L</span><span class="name">Left　左面</span></div>
+          <div class="notation-card"><span class="badge-face f-R">R</span><span class="name">Right　右面</span></div>
+          <div class="notation-card"><span class="badge-face f-F">F</span><span class="name">Front　正面（面對你）</span></div>
+          <div class="notation-card"><span class="badge-face f-B">B</span><span class="name">Back　背面</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>轉動方式</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>寫法</th><th>意思</th></tr></thead>
+        <tbody>
+          <tr><td class="alg-cell">R</td><td>該面順時針轉 90°（面向該面看）</td></tr>
+          <tr><td class="alg-cell">R'</td><td>該面逆時針轉 90°（讀作 R prime / R 撇）</td></tr>
+          <tr><td class="alg-cell">R2</td><td>該面轉 180°，順逆時針皆可</td></tr>
+          <tr><td class="alg-cell">r / l / u / d / f / b</td><td>小寫代表「連同下一層」一起轉的寬轉（wide move）</td></tr>
+          <tr><td class="alg-cell">M</td><td>中間層，方向跟 L 一致（夾在 L、R 之間的那一層）</td></tr>
+          <tr><td class="alg-cell">x / y / z</td><td>轉動整顆方塊（不是某一面），x 沿 R 軸、y 沿 U 軸、z 沿 F 軸</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>讀公式的習慣：</strong>由左到右依序執行，例如 <span class="alg">R U R' U'</span> 是「右面順轉 → 頂面順轉 → 右面逆轉 → 頂面逆轉」。這串動作在速解圈子裡被稱為「sexy move」，之後 F2L 段落會再用到。
+    </div>
+  </section>
+
+  <!-- ===================== 比較 ===================== -->
+  <section id="comparison">
+    <div class="stage-label">方法比較</div>
+    <h2>LBL vs CFOP</h2>
+    <p class="section-intro">開始練習前，先了解這兩套解法的差異與定位，決定要花多少時間在公式上。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>面向</th><th>LBL（層先法）</th><th>CFOP</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">全名</td><td>Layer-by-Layer</td><td>Cross → F2L → OLL → PLL</td></tr>
+          <tr><td class="name-cell">解法邏輯</td><td>一層蓋完再蓋下一層，共 6 步驟</td><td>前兩層同時配對插入，再處理頂層朝向與排列</td></tr>
+          <tr><td class="name-cell">需要背的公式量</td><td>少（約 5–6 組）</td><td>多（完整版 OLL 57 + PLL 21，共近 80 組）</td></tr>
+          <tr><td class="name-cell">平均步數</td><td>較多（約 100+ 步）</td><td>較少（約 50–60 步）</td></tr>
+          <tr><td class="name-cell">適合對象</td><td>新手、第一次學會解方塊</td><td>想練競速、追求秒數的人</td></tr>
+          <tr><td class="name-cell">學習曲線</td><td>平緩，容易上手</td><td>前期陡峭，公式量大</td></tr>
+          <tr><td class="name-cell">上限速度</td><td>較慢（通常 1 分鐘以上）</td><td>較快（進階可到 10–20 秒內）</td></tr>
+          <tr><td class="name-cell">進階空間</td><td>有限，練熟後容易卡在同一速度</td><td>可再學 COLL、ZBLL、Look-ahead 持續進步</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>銜接方式：</strong>大部分人是先用 LBL 學會怎麼解，建立空間感和轉動直覺後，再把 STEP 4–6（頂層部分）換成 CFOP 的 OLL／PLL 公式，中間層之前的 Cross + F2L 用中階段落教的直覺配對法取代，就自然過渡到完整 CFOP 系統，不需要整套重學。
+    </div>
+  </section>
+
+  <!-- ===================== 初階 ===================== -->
+  <section id="beginner">
+    <div class="stage-label"><span class="tag tag-easy">初階</span> 層先法 Layer-by-Layer</div>
+    <h2>用六個步驟解出整顆方塊</h2>
+    <p class="section-intro">層先法（LBL）是最容易理解的解法：一層一層往上完成。先固定「白色朝上」練習，等熟練後可以任何一色開局。</p>
+    <div class="video-links">
+      <a class="video-link" href="https://www.youtube.com/watch?v=7Ron6MN45LY" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：完整層先法教學（六個步驟都在這支影片）</a>
+      <a class="video-link" href="https://www.youtube.com/watch?v=DepFQpJ5KqU" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：完整示範解一次給你看</a>
+      <a class="video-link" href="https://www.youtube.com/watch?v=vmeleO65BHc" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：層先法怎麼轉更快</a>
+    </div>
+
+    <h3><span class="step-num">STEP 1</span> 白色十字</h3>
+    <div class="diagram-row">
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">目標：頂面(俯視)白色十字，灰色格代表角塊(先不管)</div>
+      </div>
+      <div class="diagram-text">
+        <p>找出四個白色邊塊，把它們移到底層（先不管方塊拿正確的顏色朝上或朝下），讓白色的那一面朝上，並讓十字周圍四個側面顏色分別對齊中心色。</p>
+        <p>沒有固定公式，用直覺移動：白色邊塊在頂層時，轉動頂層對齊，再用 <span class="alg">F2</span>／<span class="alg">R2</span> 這類 180° 轉法把它「打」到底層，同時不要破壞已完成的邊塊。</p>
+      </div>
+    </div>
+
+    <h3><span class="step-num">STEP 2</span> 白色一層（角塊）</h3>
+    <div class="diagram-row">
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#F7F7F5" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">目標：整個底層變成一面完整的白色</div>
+      </div>
+      <div class="diagram-text">
+        <p>把四個白色角塊也歸位，讓底層完整變成一面白色，且周圍一圈顏色對齊。</p>
+        <div class="algblock">將角塊移到目標位置正上方 → R U R' U'（重複到角塊歸位）</div>
+        <p>若角塊在底層但方向錯誤，先用 <span class="alg">R U R' U'</span> 把它「請」到頂層，再重新對位插入。</p>
+      </div>
+    </div>
+
+    <h3><span class="step-num">STEP 3</span> 中間層邊塊</h3>
+    <div class="diagram-row">
+      <div class="diagram-box wide">
+        <svg viewBox="0 0 260 92" xmlns="http://www.w3.org/2000/svg"><rect x="8.00" y="8.00" width="17.33" height="58.00" rx="3" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="27.33" y="8.00" width="17.33" height="58.00" rx="3" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="46.67" y="8.00" width="17.33" height="58.00" rx="3" fill="#1E8449" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="37.0" y="82" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle">F</text><rect x="74.00" y="8.00" width="17.33" height="58.00" rx="3" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="93.33" y="8.00" width="17.33" height="58.00" rx="3" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="112.67" y="8.00" width="17.33" height="58.00" rx="3" fill="#C1272D" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="103.0" y="82" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle">R</text><rect x="140.00" y="8.00" width="17.33" height="58.00" rx="3" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="159.33" y="8.00" width="17.33" height="58.00" rx="3" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="178.67" y="8.00" width="17.33" height="58.00" rx="3" fill="#2E5FA3" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="169.0" y="82" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle">B</text><rect x="206.00" y="8.00" width="17.33" height="58.00" rx="3" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="225.33" y="8.00" width="17.33" height="58.00" rx="3" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="244.67" y="8.00" width="17.33" height="58.00" rx="3" fill="#E0672A" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><text x="235.0" y="82" font-size="13" font-family="'JetBrains Mono', monospace" fill="#55534C" text-anchor="middle">L</text></svg>
+        <div class="cap">目標：四個側面的「腰帶」都跟中心色一致(顏色僅示意，實際依你手上方塊配色)</div>
+      </div>
+      <div class="diagram-text">
+        <p>翻轉方塊讓白色朝下，處理中間層四個邊塊。從頂層找到不含黃色的邊塊，依插入方向使用以下兩式之一：</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>邊塊要插入的方向</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">往右插入</td><td><span class="alg-cell">U R U' R' U' F' U F</span></td></tr>
+          <tr><td class="name-cell">往左插入</td><td><span class="alg-cell">U' L' U L U F U' F'</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="step-num">STEP 4</span> 頂層黃色十字</h3>
+    <p>此時頂層是黃色，先讓黃色邊塊排成十字形（先不管角塊）。依頂面圖案套公式（黃色格＝邊塊已朝上，灰色格＝還沒）：</p>
+    <div class="diagram-cluster">
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">一個點</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">一字型</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">L 型</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">十字完成</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>頂面圖案</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">一個點（無邊塊朝上）</td><td><span class="alg-cell">F R U R' U' F'</span>　做完後會變成「一字型」，再套用下一列</td></tr>
+          <tr><td class="name-cell">一字型（橫線）</td><td><span class="alg-cell">F R U R' U' F'</span></td></tr>
+          <tr><td class="name-cell">L 型（轉角）</td><td><span class="alg-cell">F U R U' R' F'</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><span class="step-num">STEP 5</span> 頂層角塊定位</h3>
+    <div class="diagram-row">
+      <div class="diagram-box">
+        <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="17.0" y="17.0" width="26" height="26" rx="5" fill="#C9C6B8" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/><rect x="97.0" y="17.0" width="26" height="26" rx="5" fill="#C9C6B8" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/><rect x="97.0" y="97.0" width="26" height="26" rx="5" fill="#C9C6B8" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/><rect x="17.0" y="97.0" width="26" height="26" rx="5" fill="#F0C419" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/><path d="M43,20 Q70.0,30.0 97,20" fill="none" stroke="#1B1B18" stroke-width="2.5" marker-end="url(#ar5)"/><path d="M110,43 Q110.0,60.0 110,97" fill="none" stroke="#1B1B18" stroke-width="2.5" marker-end="url(#ar5)"/><path d="M97,120 Q70.0,110.0 43,120" fill="none" stroke="#1B1B18" stroke-width="2.5" marker-end="url(#ar5)"/></svg>
+        <div class="cap">3 個角塊循環互換，1 個(黃)不動</div>
+      </div>
+      <div class="diagram-text">
+        <p>先不管角塊方向對不對，只把角塊移到「正確的位置」（顏色組合對，先不管朝向）。</p>
+        <div class="algblock">U R U' L' U R' U' L</div>
+        <p>執行前先找出已經在正確位置的角塊（若有）並將它放在右後方不動，再對其餘三個角塊使用此公式；若完全沒有角塊在正確位置，先執行一次公式製造出一個正確位置再繼續。</p>
+      </div>
+    </div>
+
+    <h3><span class="step-num">STEP 6</span> 頂層角塊定向（完成！）</h3>
+    <div class="diagram-row">
+      <div class="diagram-box">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ar6" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1B1B18"/></marker></defs><rect x="35" y="35" width="50" height="50" rx="6" fill="#C9C6B8" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/><path d="M95,45 A38,38 0 1 0 95,75" fill="none" stroke="#1B1B18" stroke-width="3" marker-end="url(#ar6)"/></svg>
+        <div class="cap">單一角塊原地轉正，位置不變</div>
+      </div>
+      <div class="diagram-text">
+        <p>角塊位置都對了，最後只要轉正朝向即可完成整顆方塊。</p>
+        <div class="algblock">R' D' R D　（對同一個角塊重複這組動作，直到該角朝向正確，再轉動頂層換下一個角，重複）</div>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>小技巧：</strong>執行時完全不要轉動頂層 U 面來「檢查」，只能用 <span class="alg">R' D' R D</span> 這組動作；等一個角塊轉正後，直接轉 U 面換下一個角繼續，四個角都處理完，最後轉頂層對齊整體即可。
+    </div>
+  </section>
+
+  <!-- ===================== 中階 ===================== -->
+  <section id="intermediate">
+    <div class="stage-label"><span class="tag tag-mid">中階</span> 提升效率</div>
+    <h2>指法與 F2L 概念</h2>
+    <p class="section-intro">層先法能解完方塊之後，中階的重點不是背更多公式，而是「轉得順」與「少看多想」，這是進入速解的關鍵轉折。</p>
+
+    <h3>基礎指法</h3>
+    <ul>
+      <li><strong>右手主導：</strong>R 用右手食指下推、R' 用右手拇指上推，U 用右手食指從上方撥動，減少換手時間。</li>
+      <li><strong>左手輔助：</strong>L、L' 交給左手食指與拇指，F、F' 可用左手食指完成，讓右手隨時準備下一步。</li>
+      <li><strong>不轉整顆方塊：</strong>盡量用手指撥動單一層，而不是整隻手腕轉動方塊本體，能大幅減少動作間的空檔。</li>
+    </ul>
+
+    <h3>F2L 是什麼</h3>
+    <p>F2L（First Two Layers，前兩層同時解）是速解解法的核心概念：不再像層先法一樣「先做完十字、再逐一插入角塊」，而是把每一組對應的「角塊 + 邊塊」直接配對後一次插入，前兩層可以在 8 步左右完成，而不是分開處理。</p>
+    <div class="video-links">
+      <a class="video-link" href="https://www.youtube.com/watch?v=Ar_Zit1VLG0" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：6 分鐘學會直覺式 F2L</a>
+    </div>
+
+    <h3>兩個必背的基礎動作組</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>名稱</th><th>公式</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">Sexy Move</td><td class="alg-cell">R U R' U'</td><td>最常用的配對與插入動作，F2L、OLL、PLL 都會用到</td></tr>
+          <tr><td class="name-cell">Sledgehammer</td><td class="alg-cell">R' F R F'</td><td>從側面配對角塊與邊塊的常用動作</td></tr>
+          <tr><td class="name-cell">Anti-sexy</td><td class="alg-cell">R' U' R U</td><td>Sexy Move 的反向操作，方向相反時使用</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>練習方式：</strong>先不要背 F2L 的 41 種公式表，而是練習「觀察角塊與邊塊的相對位置 → 用 sexy move／sledgehammer 家族把它們配成一對 → 插入正確的槽位」。這種直覺式 F2L 練熟後，反應速度往往比死背公式更快。
+    </div>
+  </section>
+
+  <!-- ===================== 高階 ===================== -->
+  <section id="advanced">
+    <div class="stage-label"><span class="tag tag-hard">高階</span> CFOP 系統</div>
+    <h2>Cross → F2L → OLL → PLL</h2>
+    <p class="section-intro">CFOP 是目前競速界主流解法，四個階段依序是：底部十字（Cross）、前兩層（F2L）、頂層朝向（OLL）、頂層排列（PLL）。以下聚焦在 OLL／PLL 兩個最需要公式的階段。</p>
+
+    <h3>Cross 效率化</h3>
+    <ul>
+      <li>目標是打亂後直接在腦中規劃 8 步以內完成十字，不看著方塊臨場想。</li>
+      <li>十字不一定要做在白色面，選擇當下顏色分布最省步數的那一面。</li>
+      <li>練習「盲看十字」：讀秒開始前先看完整顆方塊分布，倒數結束睜眼直接盲解十字。</li>
+    </ul>
+
+    <h3>OLL：頂層定向</h3>
+    <p>完整 OLL 有 57 個公式，一次到位（1-look OLL）。由於清單很長、死記容易出錯，這裡先提供最實用的「2-look OLL」：先把頂層邊塊轉正成十字，再把四個角塊轉正，兩階段共約 10 個公式即可涵蓋所有情況。</p>
+    <div class="video-links">
+      <a class="video-link" href="https://www.youtube.com/watch?v=wf5pXw6wpDI" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：2-Look OLL 教學（10 招）</a>
+    </div>
+
+    <div class="diagram-cluster">
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">一個點</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">一字型</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">L 型</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/></svg>
+        <div class="cap">十字完成（跳過此階段）</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>階段一：邊塊定向</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">十字已完成</td><td>— 跳過，直接進入角塊階段</td></tr>
+          <tr><td class="name-cell">一字型</td><td class="alg-cell">F R U R' U' F'</td></tr>
+          <tr><td class="name-cell">L 型</td><td class="alg-cell">F U R U' R' F'</td></tr>
+          <tr><td class="name-cell">一個點</td><td class="alg-cell">f R U R' U' f'　R U R' U'　F R U R' U' F'</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>邊塊十字完成後，換角塊。下面兩個是最常見、最好認的兩招：只有 1 個角塊已經朝上正確（黃色），其餘 3 個角塊還沒轉正，差別在於「轉動方向」：</p>
+    <div class="diagram-cluster">
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="aro1" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M92.2,28.7 Q92.2,64.0 92.2,79.3" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#aro1)"/><path d="M79.3,90.6 Q54.0,76.6 28.7,90.6" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#aro1)"/></svg>
+        <div class="cap">Sune：已解角塊在左上，往「順時針」轉動</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="aro2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M92.2,79.3 Q92.2,44.0 92.2,28.7" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#aro2)"/><path d="M28.7,90.6 Q54.0,104.6 79.3,90.6" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#aro2)"/></svg>
+        <div class="cap">Anti-Sune：Sune 的鏡像，方向相反</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>階段二：角塊定向（常用情況）</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">Sune</td><td class="alg-cell">R U R' U R U2 R'</td></tr>
+          <tr><td class="name-cell">Anti-Sune</td><td class="alg-cell">R U2 R' U' R U' R'</td></tr>
+          <tr><td class="name-cell">T 型</td><td class="alg-cell">F R U R' U' F'</td></tr>
+          <tr><td class="name-cell">Pi 型</td><td class="alg-cell">R U2 R2 U' R2 U' R2 U2 R</td></tr>
+          <tr><td class="name-cell">H 型</td><td class="alg-cell">F R U R' U' R U R' U' F'</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <strong>Pi／T／H 型的圖案：</strong>這三種都是「頂面 0 個角塊已經朝上」，差別在於側面哪些角塊顏色互相配對（俗稱 headlights／對燈），純文字圖較難精準畫出，建議搭配 CSTimer 或 J Perm 的 OLL 頁面對照圖片練習辨認，公式本身已經核對過可以放心背。
+    </div>
+
+    <div class="callout">
+      <strong>什麼時候該學完整版：</strong>2-look 已經能完整解出頂層，完整 57 招的價值在於把「觀察兩次」壓縮成「觀察一次」，省下的是重新掃描方塊的時間，不是轉動時間本身。建議 2-look 練到穩定、Cross+F2L 也順了之後，再開始一招一招替換。
+    </div>
+
+    <h3 id="oll57">完整 57 招 1-look OLL</h3>
+    <p>下表依編號排列，公式前的 <span class="alg">(U)</span>／<span class="alg">(U2)</span>／<span class="alg">(U')</span> 表示執行公式前，先轉動頂層對齊該圖案的角度（不同教材對同一情況會用不同角度截圖，實際辨認時請搭配圖片或 App 練習，純文字表格較適合已經眼熟圖案、只需要查公式的階段）。</p>
+    <div class="video-links">
+      <a class="video-link" href="https://www.youtube.com/watch?v=vU6HsK3hvQs" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：完整 57 招 OLL ＋ 指法示範</a>
+    </div>
+    <p>「邊塊圖案」欄只標出可以 100% 確定的兩種：<span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span> 代表完全沒有邊塊定向（1–4 號，最難的一組），<span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span> 代表邊塊已經是十字（21–27 號，也就是前面 2-look 教過的 OCLL 家族）。其餘案例的邊塊會是「一字型」或「L 型」其中一種，但角塊排列各不相同，這部分的精準圖解建議搭配圖片或 App 對照，避免手繪示意圖反而造成誤解。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>邊塊圖案</th><th>名稱</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">1</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Runway</td><td class="alg-cell">R U2' R2' F R F' U2 R' F R F'</td></tr>
+          <tr><td class="name-cell">2</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Zamboni</td><td class="alg-cell">(U') R U' R2' D' r U r' D R2 U R'</td></tr>
+          <tr><td class="name-cell">3</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Anti-Pinwheel</td><td class="alg-cell">(U) f (R U R' U') f' U' F (R U R' U') F'</td></tr>
+          <tr><td class="name-cell">4</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Pinwheel</td><td class="alg-cell">f R U R' U' f' U F R U R' U' F'</td></tr>
+          <tr><td class="name-cell">5</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Lefty Square</td><td class="alg-cell">(U2) l' U2 L U L' U l</td></tr>
+          <tr><td class="name-cell">6</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Righty Square</td><td class="alg-cell">(U2) r U2 R' U' R U' r'</td></tr>
+          <tr><td class="name-cell">7</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Lightning</td><td class="alg-cell">r U R' U R U2 r'</td></tr>
+          <tr><td class="name-cell">8</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Wide Left Sune</td><td class="alg-cell">l' U' L U' L' U2 l</td></tr>
+          <tr><td class="name-cell">9</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Kite</td><td class="alg-cell">(U') R U R' U' R' F R2 U R' U' F'</td></tr>
+          <tr><td class="name-cell">10</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Kite</td><td class="alg-cell">(U') R U R' U R' F R F' R U2' R'</td></tr>
+          <tr><td class="name-cell">11</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Downstairs</td><td class="alg-cell">(U') r' R2 U R' U R U2' R' U M'</td></tr>
+          <tr><td class="name-cell">12</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Upstairs</td><td class="alg-cell">(U') r R2' U' R U' R' U2 R U' r' R</td></tr>
+          <tr><td class="name-cell">13</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Gun</td><td class="alg-cell">F U R U2' R' U' R U R' F'</td></tr>
+          <tr><td class="name-cell">14</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Gun</td><td class="alg-cell">R' F R U R' F' R F U' F'</td></tr>
+          <tr><td class="name-cell">15</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Squeegee</td><td class="alg-cell">(U2) l' U' l L' U' L U l' U l</td></tr>
+          <tr><td class="name-cell">16</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Squeegee</td><td class="alg-cell">(U2) r U r' R U R' U' r U' r'</td></tr>
+          <tr><td class="name-cell">17</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Slash</td><td class="alg-cell">R U R' U R' F R F' U2 R' F R F'</td></tr>
+          <tr><td class="name-cell">18</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Crown</td><td class="alg-cell">R U2 R2 F R F' U2 M' U R U' r'</td></tr>
+          <tr><td class="name-cell">19</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Bunny</td><td class="alg-cell">S' R U R' S U' R' F R F'</td></tr>
+          <tr><td class="name-cell">20</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>X / Checkers</td><td class="alg-cell">r' R U R U R' U' r R' M' U R U' r'</td></tr>
+          <tr><td class="name-cell">21</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>H / Double Sune</td><td class="alg-cell">R U R' U R U' R' U R U2 R'</td></tr>
+          <tr><td class="name-cell">22</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Pi</td><td class="alg-cell">R U2' R2' U' R2 U' R2' U2' R</td></tr>
+          <tr><td class="name-cell">23</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Headlights / Superman</td><td class="alg-cell">R2' D' R U2 R' D R U2 R</td></tr>
+          <tr><td class="name-cell">24</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>T / Chameleon</td><td class="alg-cell">r U R' U' r' F R F'</td></tr>
+          <tr><td class="name-cell">25</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>L / Bowtie</td><td class="alg-cell">(U2) F R' F' r U R U' r'</td></tr>
+          <tr><td class="name-cell">26</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Antisune</td><td class="alg-cell">(y') R U2 R' U' R U' R'</td></tr>
+          <tr><td class="name-cell">27</td><td class="icon-cell"><span class="mini-icon"><svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg">
+<rect x="6.0" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="6.0" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="39.33333333333333" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="6.0" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="39.33333333333333" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+<rect x="72.66666666666666" y="72.66666666666666" width="29.333333333333332" height="29.333333333333332" rx="4" fill="#C9C6B8" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/>
+
+</svg></span></td><td>Sune</td><td class="alg-cell">R U R' U R U2' R'</td></tr>
+          <tr><td class="name-cell">28</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Stealth / Arrow</td><td class="alg-cell">r U R' U' r' R U R U' R'</td></tr>
+          <tr><td class="name-cell">29</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Spotted Chameleon</td><td class="alg-cell">(U) R U R' U' R U' R' F' U' F R U R'</td></tr>
+          <tr><td class="name-cell">30</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Spotted Chameleon</td><td class="alg-cell">(U2) F U R U2' R' U' R U2 R' U' F'</td></tr>
+          <tr><td class="name-cell">31</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Couch</td><td class="alg-cell">(U2) R' U' F U R U' R' F' R</td></tr>
+          <tr><td class="name-cell">32</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Couch</td><td class="alg-cell">S R U R' U' R' F R f'</td></tr>
+          <tr><td class="name-cell">33</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Tying Shoelaces</td><td class="alg-cell">R U R' U' R' F R F'</td></tr>
+          <tr><td class="name-cell">34</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>City</td><td class="alg-cell">R U R2' U' R' F R U R U' F'</td></tr>
+          <tr><td class="name-cell">35</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Fish Salad</td><td class="alg-cell">R U2' R2' F R F' R U2' R'</td></tr>
+          <tr><td class="name-cell">36</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Sea-Mew</td><td class="alg-cell">(U2) L' U' L U' L' U L U L F' L' F</td></tr>
+          <tr><td class="name-cell">37</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Mounted Fish</td><td class="alg-cell">(U) F R' F' R U R U' R'</td></tr>
+          <tr><td class="name-cell">38</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Mario / Moustache</td><td class="alg-cell">(U2) R U R' U R U' R' U' R' F R F'</td></tr>
+          <tr><td class="name-cell">39</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Fung</td><td class="alg-cell">L F' L' U' L U F U' L'</td></tr>
+          <tr><td class="name-cell">40</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Fung</td><td class="alg-cell">R' F R U R' U' F' U R</td></tr>
+          <tr><td class="name-cell">41</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Awkward Fish</td><td class="alg-cell">(U2) R U R' U R U2 R' F R U R' U' F'</td></tr>
+          <tr><td class="name-cell">42</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Lefty Awkward Fish</td><td class="alg-cell">R' U' R U' R' U2' R F R U R' U' F'</td></tr>
+          <tr><td class="name-cell">43</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-P</td><td class="alg-cell">(U) R' U' F' U F R</td></tr>
+          <tr><td class="name-cell">44</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>P</td><td class="alg-cell">(U2) F (U R U' R') F'</td></tr>
+          <tr><td class="name-cell">45</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Suit Up / T</td><td class="alg-cell">F R U R' U' F'</td></tr>
+          <tr><td class="name-cell">46</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Seein' Headlights</td><td class="alg-cell">R' U' R' F R F' U R</td></tr>
+          <tr><td class="name-cell">47</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Breakneck</td><td class="alg-cell">(U') F R' F' R U2 R U' R' U R U2' R'</td></tr>
+          <tr><td class="name-cell">48</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Breakneck</td><td class="alg-cell">F R U R' U' R U R' U' F'</td></tr>
+          <tr><td class="name-cell">49</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Right Back Squeezy</td><td class="alg-cell">(U2) r U' r2' U r2 U r2' U' r</td></tr>
+          <tr><td class="name-cell">50</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Right Front Squeezy</td><td class="alg-cell">(U2) R' F R2 B' R2' F' R2 B R'</td></tr>
+          <tr><td class="name-cell">51</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Bottlecap</td><td class="alg-cell">F U R U' R' U R U' R' F'</td></tr>
+          <tr><td class="name-cell">52</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Rice Cooker</td><td class="alg-cell">R U R' U R U' B U' B' R'</td></tr>
+          <tr><td class="name-cell">53</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Frying Pan</td><td class="alg-cell">l' U' L U' L' U L U' L' U2 l</td></tr>
+          <tr><td class="name-cell">54</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Anti-Frying Pan</td><td class="alg-cell">r U R' U R U' R' U R U2' r'</td></tr>
+          <tr><td class="name-cell">55</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Highway</td><td class="alg-cell">(U) R' F R U R U' R2' F' R2 U' R' U R U R'</td></tr>
+          <tr><td class="name-cell">56</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Streetlights</td><td class="alg-cell">r U r' U R U' R' U R U' R' r U' r'</td></tr>
+          <tr><td class="name-cell">57</td><td class="icon-cell"><span style="color:var(--ink-soft)">–</span></td><td>Mummy / H</td><td class="alg-cell">R U R' U' M' U R U' r'</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>資料核對：</strong>以上公式已對照 Speedsolving.com Wiki 的 OLL 標準公式庫（2026 年版本）整理。不同來源常會列出多個可用公式（例如慣用左手或右手版本），此表選用其中一種常見版本；若你已經習慣其他版本，繼續使用原本背的即可，不需要重背。
+    </div>
+
+    <h3>PLL：頂層排列（完整 21 招）</h3>
+    <p>頂層方向都對了之後，最後排列每個面塊的位置。這裡的圖已經全部是黃色（方向都對），箭頭代表哪幾塊要「換位置」——這正是 21 招 PLL 彼此的差異所在：</p>
+    <div class="video-links">
+      <a class="video-link" href="https://www.youtube.com/watch?v=f_Yor-ydZjs" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：2-Look PLL 入門教學</a>
+      <a class="video-link" href="https://www.youtube.com/watch?v=9r_HqG4zSbk" target="_blank" rel="noopener"><span class="play">▶</span> J Perm：完整 21 招 PLL ＋ 指法示範</a>
+    </div>
+    <div class="diagram-cluster">
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arA" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M28.7,23.9 Q54.0,37.9 79.3,23.9" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arA)"/><path d="M92.2,28.7 Q92.2,64.0 92.2,79.3" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arA)"/></svg>
+        <div class="cap"><strong>Aa／Ab</strong>：3 個角塊循環，邊塊不動</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arB" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M60.2,26.8 Q72.9,46.0 85.6,45.2" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arB)"/><path d="M85.6,62.8 Q72.9,64.2 60.2,85.6" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arB)"/><path d="M47.8,85.6 Q47.8,48.2 47.8,26.8" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arB)"/></svg>
+        <div class="cap"><strong>Ua／Ub</strong>：3 個邊塊循環，角塊不動</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arC" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M43.7,26.8 L43.7,81.2" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arC)"/><path d="M64.3,81.2 L64.3,26.8" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arC)"/><path d="M26.8,43.7 L81.2,43.7" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arC)"/><path d="M81.2,64.3 L26.8,64.3" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arC)"/></svg>
+        <div class="cap"><strong>H</strong>：對邊兩兩互換，最好認</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arD" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M62.0,26.7 Q71.7,42.3 81.3,46.0" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arD)"/><path d="M81.3,62.0 Q71.7,32.3 62.0,14.7" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arD)"/><path d="M46.0,81.3 Q36.3,77.7 26.7,62.0" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arD)"/><path d="M26.7,46.0 Q36.3,63.7 46.0,93.3" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arD)"/></svg>
+        <div class="cap"><strong>Z</strong>：相鄰對邊兩兩互換</div>
+      </div>
+      <div class="diagram-box">
+        <svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arE" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1B1B18"/></marker></defs><rect x="6.00" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="6.00" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="39.33" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="6.00" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="39.33" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><rect x="72.67" y="72.67" width="29.33" height="29.33" rx="4" fill="#F0C419" stroke="rgba(0,0,0,0.25)" stroke-width="1.5"/><path d="M87.3,29.5 L87.3,78.5" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arE)"/><path d="M92.6,75.0 L92.6,33.0" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arE)"/><path d="M25.9,45.2 L45.2,92.6" fill="none" stroke="#1B1B18" stroke-width="2.2" marker-end="url(#arE)"/></svg>
+        <div class="cap"><strong>T</strong>：2 個角塊互換 ＋ 2 個邊塊互換</div>
+      </div>
+    </div>
+    <p>其餘 16 招（E、F、Ga–Gd、Ja／Jb、Na／Nb、Ra／Rb、V、Y）都是「角塊＋邊塊混合互換」的變化型，彼此差異在於哪幾塊互換、互換是相鄰還是對角，這部分同樣建議搭配圖片或 App 確認，公式已經核對過的完整表如下：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>名稱</th><th>公式</th><th>特徵</th></tr></thead>
+        <tbody>
+          <tr><td class="name-cell">Aa</td><td class="alg-cell">x R' U R' D2 R U' R' D2 R2 x'</td><td>角塊三循環（逆時針）</td></tr>
+          <tr><td class="name-cell">Ab</td><td class="alg-cell">x R2 D2 R U R' D2 R U' R x'</td><td>角塊三循環（順時針）</td></tr>
+          <tr><td class="name-cell">E</td><td class="alg-cell">x' R U' R' D R U R' D' R U R' D R U' R' D' x</td><td>兩組角塊互換</td></tr>
+          <tr><td class="name-cell">F</td><td class="alg-cell">R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R</td><td>邊塊與角塊各一組互換</td></tr>
+          <tr><td class="name-cell">Ga</td><td class="alg-cell">R2 U R' U R' U' R U' R2 U' D R' U R D'</td><td>角邊塊循環，無鏡像對稱</td></tr>
+          <tr><td class="name-cell">Gb</td><td class="alg-cell">R' U' R U D' R2 U R' U R U' R U' R2 D</td><td>Ga 的變化</td></tr>
+          <tr><td class="name-cell">Gc</td><td class="alg-cell">R2 U' R U' R U R' U R2 U D' R U' R' D</td><td>Ga 的變化</td></tr>
+          <tr><td class="name-cell">Gd</td><td class="alg-cell">R U R' U' D R2 U' R U' R' U R' U R2 D'</td><td>Ga 的變化</td></tr>
+          <tr><td class="name-cell">Ja</td><td class="alg-cell">R' U L' U2 R U' R' U2 R L</td><td>相鄰角邊互換</td></tr>
+          <tr><td class="name-cell">Jb</td><td class="alg-cell">R U R' F' R U R' U' R' F R2 U' R'</td><td>Ja 的鏡像</td></tr>
+          <tr><td class="name-cell">Na</td><td class="alg-cell">R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'</td><td>對角互換</td></tr>
+          <tr><td class="name-cell">Nb</td><td class="alg-cell">R' U R U' R' F' U' F R U R' F R' F' R U' R</td><td>Na 的鏡像</td></tr>
+          <tr><td class="name-cell">Ra</td><td class="alg-cell">R U' R' U' R U R D R' U' R D' R' U2 R'</td><td>角邊各一組互換</td></tr>
+          <tr><td class="name-cell">Rb</td><td class="alg-cell">R' U2 R U2 R' F R U R' U' R' F' R2 U'</td><td>Ra 的鏡像</td></tr>
+          <tr><td class="name-cell">T</td><td class="alg-cell">R U R' U' R' F R2 U' R' U' R U R' F'</td><td>兩個角塊互換</td></tr>
+          <tr><td class="name-cell">V</td><td class="alg-cell">R' U R' U' y R' F' R2 U' R' U R' F R F</td><td>對角互換</td></tr>
+          <tr><td class="name-cell">Y</td><td class="alg-cell">F R U' R' U' R U R' F' R U R' U' R' F R F'</td><td>對角互換</td></tr>
+          <tr><td class="name-cell">Ua</td><td class="alg-cell">R U' R U R U R U' R' U' R2</td><td>三個邊塊循環</td></tr>
+          <tr><td class="name-cell">Ub</td><td class="alg-cell">R2 U R U R' U' R' U' R' U R'</td><td>Ua 的鏡像</td></tr>
+          <tr><td class="name-cell">Z</td><td class="alg-cell">M' U M2 U M2 U M' U2 M2 U</td><td>兩組邊塊互換</td></tr>
+          <tr><td class="name-cell">H</td><td class="alg-cell">M2 U M2 U2 M2 U M2</td><td>兩組對邊互換，最容易辨認</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>更進階的方向</h3>
+    <ul>
+      <li><strong>1-look OLL：</strong>把 2-look 的兩階段合併成一步直接判斷，可省下約 1–2 秒。</li>
+      <li><strong>COLL / ZBLL：</strong>在角塊定位時同時完成排列，屬於進階公式系統，公式量大，建議先把 CFOP 基礎練到穩定再學。</li>
+      <li><strong>單手解（OH）與盲解（BLD）：</strong>屬於獨立分項比賽，OH 練的是單手指法效率，BLD 練的是記憶系統（字母配對法），都建議在 CFOP 穩定在 20 秒內再開始碰。</li>
+    </ul>
+  </section>
+
+  <!-- ===================== 練習建議 ===================== -->
+  <section id="practice">
+    <div class="stage-label">練習資源</div>
+    <h2>怎麼練習進步最快</h2>
+    <ul>
+      <li><strong>計時＋分段記錄：</strong>用 CSTimer（網頁版）或手機 App 記錄每次解法時間，並拆分出 Cross / F2L / OLL / PLL 各段秒數，找出最拖時間的環節。</li>
+      <li><strong>先求穩定，再求速度：</strong>準確率比手速重要，公式卡住寧可停下想清楚，也不要用錯誤的肌肉記憶硬轉。</li>
+      <li><strong>Look-ahead 練習：</strong>執行目前這步的同時，眼睛已經在看下一步要處理的位置，這是從中階邁向高階最關鍵的習慣。</li>
+      <li><strong>公式核對來源：</strong>學習新公式時，建議對照 CSTimer 內建公式庫或 J Perm 的公式頁面，確保每一招都是驗證過的標準版本。</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  魔術方塊教學文件・涵蓋層先法、F2L、2-look OLL、完整 21 招 PLL
+</footer>
+
+</body>
+</html>
